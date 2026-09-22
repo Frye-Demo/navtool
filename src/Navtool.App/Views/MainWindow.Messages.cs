@@ -154,7 +154,7 @@ public partial class MainWindow
             return;
         }
 
-        var visible = GetVisibleMessages();
+        var visible = _messages.ToArray();
         var sections = new List<string> { GetMessageTitle(visible) };
         if (visible.Any(message => message.IsInterrupted))
             sections.Add(this.FindControl<TextBlock>("MessageIncompleteText")!.Text!);
