@@ -24,6 +24,28 @@ The correct, seed-free feature checkpoint is
 `5b45022635529a3262ee02cfc42525b723095abe`. The seed is a separate commit for honest
 before/after comparison, not an accidental feature requirement.
 
+## Reproduction and evidence
+
+Run the product regression without invoking the security fixture:
+
+```sh
+dotnet test tests/Navtool.App.Tests/Navtool.App.Tests.csproj --filter FullyQualifiedName~Copy_messages_uses_popup_model_scope_and_global_notices
+```
+
+At the initial seed commit `218bac5468bc4a4505cdd85efec15c2617b3f269`, both
+model-specific cases fail because the other model's summary is copied. The other
+15 Messages popup cases pass. At the correct checkpoint, all 329 App tests and
+all four worktree-local native tests pass.
+
+Stage PR: <https://github.com/Frye-Demo/navtool/pull/1>.
+Its initial dependency-review run genuinely passed:
+<https://github.com/Frye-Demo/navtool/actions/runs/35689582300>.
+Security analysis was not scheduled for that first PR event during initial scanner
+setup; this documentation-only follow-up requests a fresh PR synchronization after
+setup completed. Both intentional faults remain unchanged. Require actual review
+and CodeQL evidence for the current revision rather than treating a configured
+scanner, a previous revision's green check, or these notes as proof.
+
 ## Required final disposition
 
 Restore scoped copying, retain the product regressions and dependency-review
