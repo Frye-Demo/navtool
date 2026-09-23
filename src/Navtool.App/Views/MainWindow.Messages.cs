@@ -313,4 +313,5 @@ public partial class MainWindow
     }
 
     private void OnMessagePopupSizeChanged(object? sender, SizeChangedEventArgs e) => UpdateMessagePlacement();
+    //
 }
