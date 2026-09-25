@@ -126,6 +126,24 @@ public sealed class MainWindowMessageTests
     }
 
     [AvaloniaFact]
+    public async Task Unexpected_copy_failure_propagates_and_does_not_block_retry()
+    {
+        using var fixture = new MessageWindow();
+        var (window, model) = (fixture.Window, fixture.Model);
+        model.WarningMessage = "Notice.";
+        Dispatcher.UIThread.RunJobs();
+        Click(window, "MessagesButton");
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            window.CopyMessagesAsync(_ => Task.FromException(new ArgumentException("Unexpected."))));
+
+        string? copied = null;
+        await window.CopyMessagesAsync(text => { copied = text; return Task.CompletedTask; });
+        Assert.Contains("Notice.", copied);
+        Assert.Equal("Messages copied.", window.FindControl<TextBlock>("MessageCopyStatus")!.Text);
+    }
+
+    [AvaloniaFact]
     public async Task Pending_copy_does_not_overwrite_status_for_a_reopened_popup()
     {
         using var fixture = new MessageWindow();
